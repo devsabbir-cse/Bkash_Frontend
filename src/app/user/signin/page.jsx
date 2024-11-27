@@ -1,9 +1,8 @@
-'use client'
+"use client";
 import { useState } from "react";
 
-export default function Signup() {
+export default function Login() {
   const [formData, setFormData] = useState({
-    name: "",
     no: "",
     password: "",
   });
@@ -12,12 +11,14 @@ export default function Signup() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  console.log(formData,"formData");
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/signup", {
+      const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,8 +28,15 @@ export default function Signup() {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage(data.message);
-        setFormData({ name: "", no: "", password: "" });
+        setMessage("Login successful!");
+        
+        // Save the `no` (user identifier) to localStorage
+        localStorage.setItem("no", formData.no);
+
+        // Redirect or handle login success (example redirection)
+        setTimeout(() => {
+          window.location.href = "/dashboard"; // Replace with your actual route
+        }, 1000);
       } else {
         setMessage(data.error);
       }
@@ -42,32 +50,18 @@ export default function Signup() {
 <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-pink-500 to-pink-700">
   <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
     <h2 className="text-2xl font-bold text-center text-gray-700">
-      Create an Account
+      Login to Your Account
     </h2>
     {message && (
       <p
         className={`text-center text-sm ${
-          message.includes("successfully") ? "text-green-600" : "text-red-600"
+          message === "Login successful!" ? "text-green-600" : "text-pink-600"
         }`}
       >
         {message}
       </p>
     )}
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-600">
-          Name
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full px-4 py-2 mt-1 text-sm text-gray-700 border rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
-          required
-        />
-      </div>
       <div>
         <label htmlFor="no" className="block text-sm font-medium text-gray-600">
           Mobile No
@@ -78,7 +72,7 @@ export default function Signup() {
           name="no"
           value={formData.no}
           onChange={handleChange}
-          className="w-full px-4 py-2 mt-1 text-sm text-gray-700 border rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
+          className="w-full px-4 py-2 mt-1 text-sm text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none"
           required
         />
       </div>
@@ -92,20 +86,20 @@ export default function Signup() {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          className="w-full px-4 py-2 mt-1 text-sm text-gray-700 border rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
+          className="w-full px-4 py-2 mt-1 text-sm text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none"
           required
         />
       </div>
       <button
         type="submit"
-        className="w-full px-4 py-2 font-semibold text-white bg-pink-600 rounded-md hover:bg-pink-700 focus:outline-none"
+        className="w-full px-4 py-2 font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
       >
-        Sign Up
+        Login
       </button>
     </form>
   </div>
 </div>
 
-
+  
   );
 }
