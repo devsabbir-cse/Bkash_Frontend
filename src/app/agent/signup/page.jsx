@@ -18,7 +18,7 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/signup", {
+      const res = await fetch("http://localhost:5000/api/agent-signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,8 +42,9 @@ export default function Signup() {
   return (
 <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-pink-500 to-pink-700">
   <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
+  
     <h2 className="text-2xl font-bold text-center text-gray-700">
-    <span className="text-pink-600">User</span> Create an Account
+    <span className="text-pink-600">Agent</span> Create an Agent Account
     </h2>
     {message && (
       <p
