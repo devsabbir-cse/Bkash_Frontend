@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -26,6 +26,30 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  const handleDelete = async (userNo) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/delete_user`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ no: userNo }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Remove the deleted user from the state
+        setUsers((prevUsers) => prevUsers.filter((user) => user.no !== userNo));
+      } else {
+        throw new Error(result.message || "Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error.message);
+      setError(error.message);
+    }
+  };
+
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -37,7 +61,9 @@ const Users = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100">
       <h1 className="mb-5 text-4xl font-bold text-pink-600">Users List</h1>
-      <Link href="dashboard" className="mx-10 ms-auto"><button className="mb-8 text-4xl font-bold text-black ">Back</button></Link>
+      <Link href="dashboard" className="mx-10 ms-auto">
+        <button className="mb-8 text-4xl font-bold text-black">Back</button>
+      </Link>
 
       <table className="w-3/4 border border-collapse border-gray-300 table-auto">
         <thead>
@@ -45,6 +71,7 @@ const Users = () => {
             <th className="px-4 py-2 border border-gray-300">No</th>
             <th className="px-4 py-2 border border-gray-300">Name</th>
             <th className="px-4 py-2 border border-gray-300">Balance</th>
+            <th className="px-4 py-2 border border-gray-300">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +81,14 @@ const Users = () => {
                 <td className="px-4 py-2 border border-gray-300">{user.no}</td>
                 <td className="px-4 py-2 border border-gray-300">{user.name}</td>
                 <td className="px-4 py-2 border border-gray-300">{user.balance}</td>
+                <td className="px-4 py-2 border border-gray-300">
+                  <button
+                    className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+                    onClick={() => handleDelete(user.no)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
